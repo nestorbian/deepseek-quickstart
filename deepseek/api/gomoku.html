@@ -1,0 +1,410 @@
+# 五子棋人机对战游戏
+
+以下是一个完整的HTML文件，包含了一个简单的人机对战五子棋游戏。这个游戏实现了基本的五子棋规则，AI会尝试阻止玩家获胜并寻找获胜机会。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五子棋人机对战</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f5f5dc;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #8b4513;
+            margin-bottom: 10px;
+        }
+        .game-info {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        .board-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        canvas {
+            background-color: #deb887;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #8b4513;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #a0522d;
+        }
+        .win-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #8b4513;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <h1>五子棋人机对战</h1>
+    <div class="game-info" id="gameInfo">轮到: 玩家(黑棋)</div>
+    <div class="board-container">
+        <canvas id="board" width="450" height="450"></canvas>
+        <div class="win-message" id="winMessage"></div>
+    </div>
+    <div class="controls">
+        <button id="resetBtn">重新开始</button>
+    </div>
+
+    <script>
+        // 游戏常量
+        const BOARD_SIZE = 15;
+        const CELL_SIZE = 30;
+        const PIECE_RADIUS = 13;
+        const BLACK = 1;
+        const WHITE = 2;
+        
+        // 游戏状态
+        let board = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(0));
+        let currentPlayer = BLACK; // 黑棋先行
+        let gameOver = false;
+        
+        // DOM元素
+        const canvas = document.getElementById('board');
+        const ctx = canvas.getContext('2d');
+        const gameInfo = document.getElementById('gameInfo');
+        const winMessage = document.getElementById('winMessage');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        // 初始化游戏
+        function initGame() {
+            board = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(0));
+            currentPlayer = BLACK;
+            gameOver = false;
+            winMessage.style.display = 'none';
+            updateGameInfo();
+            drawBoard();
+        }
+        
+        // 更新游戏信息显示
+        function updateGameInfo() {
+            gameInfo.textContent = `轮到: ${currentPlayer === BLACK ? '玩家(黑棋)' : '电脑(白棋)'}`;
+        }
+        
+        // 绘制棋盘
+        function drawBoard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制棋盘线
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                // 横线
+                ctx.beginPath();
+                ctx.moveTo(CELL_SIZE / 2, i * CELL_SIZE + CELL_SIZE / 2);
+                ctx.lineTo(canvas.width - CELL_SIZE / 2, i * CELL_SIZE + CELL_SIZE / 2);
+                ctx.stroke();
+                
+                // 竖线
+                ctx.beginPath();
+                ctx.moveTo(i * CELL_SIZE + CELL_SIZE / 2, CELL_SIZE / 2);
+                ctx.lineTo(i * CELL_SIZE + CELL_SIZE / 2, canvas.height - CELL_SIZE / 2);
+                ctx.stroke();
+            }
+            
+            // 绘制棋子
+            for (let y = 0; y < BOARD_SIZE; y++) {
+                for (let x = 0; x < BOARD_SIZE; x++) {
+                    if (board[y][x] === BLACK) {
+                        drawPiece(x, y, BLACK);
+                    } else if (board[y][x] === WHITE) {
+                        drawPiece(x, y, WHITE);
+                    }
+                }
+            }
+        }
+        
+        // 绘制棋子
+        function drawPiece(x, y, color) {
+            const centerX = x * CELL_SIZE + CELL_SIZE / 2;
+            const centerY = y * CELL_SIZE + CELL_SIZE / 2;
+            
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, PIECE_RADIUS, 0, Math.PI * 2);
+            
+            if (color === BLACK) {
+                ctx.fillStyle = '#000';
+            } else {
+                ctx.fillStyle = '#fff';
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+            
+            ctx.fill();
+        }
+        
+        // 检查是否获胜
+        function checkWin(x, y, player) {
+            const directions = [
+                [1, 0],   // 水平
+                [0, 1],    // 垂直
+                [1, 1],     // 右下
+                [1, -1]     // 右上
+            ];
+            
+            for (const [dx, dy] of directions) {
+                let count = 1;
+                
+                // 正向检查
+                for (let i = 1; i < 5; i++) {
+                    const nx = x + dx * i;
+                    const ny = y + dy * i;
+                    if (nx < 0 || nx >= BOARD_SIZE || ny < 0 || ny >= BOARD_SIZE || board[ny][nx] !== player) {
+                        break;
+                    }
+                    count++;
+                }
+                
+                // 反向检查
+                for (let i = 1; i < 5; i++) {
+                    const nx = x - dx * i;
+                    const ny = y - dy * i;
+                    if (nx < 0 || nx >= BOARD_SIZE || ny < 0 || ny >= BOARD_SIZE || board[ny][nx] !== player) {
+                        break;
+                    }
+                    count++;
+                }
+                
+                if (count >= 5) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
+        // 检查棋盘是否已满
+        function isBoardFull() {
+            for (let y = 0; y < BOARD_SIZE; y++) {
+                for (let x = 0; x < BOARD_SIZE; x++) {
+                    if (board[y][x] === 0) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        
+        // 显示获胜信息
+        function showWinMessage(winner) {
+            winMessage.textContent = winner === BLACK ? '玩家获胜!' : '电脑获胜!';
+            winMessage.style.display = 'block';
+            gameOver = true;
+        }
+        
+        // 显示平局信息
+        function showDrawMessage() {
+            winMessage.textContent = '平局!';
+            winMessage.style.display = 'block';
+            gameOver = true;
+        }
+        
+        // AI移动
+        function aiMove() {
+            if (gameOver) return;
+            
+            // 简单AI逻辑：先检查自己能否赢，再检查玩家能否赢，否则随机走
+            let bestMove = null;
+            
+            // 1. 检查AI是否能直接获胜
+            bestMove = findWinningMove(WHITE);
+            if (bestMove) {
+                makeMove(bestMove.x, bestMove.y, WHITE);
+                return;
+            }
+            
+            // 2. 检查玩家是否能直接获胜，阻止玩家
+            bestMove = findWinningMove(BLACK);
+            if (bestMove) {
+                makeMove(bestMove.x, bestMove.y, WHITE);
+                return;
+            }
+            
+            // 3. 如果没有直接威胁，寻找最佳位置
+            bestMove = findBestMove();
+            if (bestMove) {
+                makeMove(bestMove.x, bestMove.y, WHITE);
+                return;
+            }
+            
+            // 4. 如果以上都没找到，随机走
+            const emptyCells = [];
+            for (let y = 0; y < BOARD_SIZE; y++) {
+                for (let x = 0; x < BOARD_SIZE; x++) {
+                    if (board[y][x] === 0) {
+                        emptyCells.push({x, y});
+                    }
+                }
+            }
+            
+            if (emptyCells.length > 0) {
+                const randomMove = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                makeMove(randomMove.x, randomMove.y, WHITE);
+            }
+        }
+        
+        // 寻找获胜的移动
+        function findWinningMove(player) {
+            for (let y = 0; y < BOARD_SIZE; y++) {
+                for (let x = 0; x < BOARD_SIZE; x++) {
+                    if (board[y][x] === 0) {
+                        board[y][x] = player;
+                        if (checkWin(x, y, player)) {
+                            board[y][x] = 0; // 恢复
+                            return {x, y};
+                        }
+                        board[y][x] = 0; // 恢复
+                    }
+                }
+            }
+            return null;
+        }
+        
+        // 寻找最佳移动（简单评分系统）
+        function findBestMove() {
+            let bestScore = -Infinity;
+            let bestMove = null;
+            
+            for (let y = 0; y < BOARD_SIZE; y++) {
+                for (let x = 0; x < BOARD_SIZE; x++) {
+                    if (board[y][x] === 0) {
+                        // 评分：优先中心位置和已有棋子附近
+                        let score = 0;
+                        
+                        // 中心位置加分
+                        const center = (BOARD_SIZE - 1) / 2;
+                        const distanceToCenter = Math.sqrt(Math.pow(x - center, 2) + Math.pow(y - center, 2));
+                        score += (BOARD_SIZE - distanceToCenter) * 2;
+                        
+                        // 附近有棋子加分
+                        for (let dy = -2; dy <= 2; dy++) {
+                            for (let dx = -2; dx <= 2; dx++) {
+                                const nx = x + dx;
+                                const ny = y + dy;
+                                if (nx >= 0 && nx < BOARD_SIZE && ny >= 0 && ny < BOARD_SIZE && board[ny][nx] !== 0) {
+                                    score += board[ny][nx] === WHITE ? 5 : 3;
+                                }
+                            }
+                        }
+                        
+                        if (score > bestScore) {
+                            bestScore = score;
+                            bestMove = {x, y};
+                        }
+                    }
+                }
+            }
+            
+            return bestMove;
+        }
+        
+        // 执行移动
+        function makeMove(x, y, player) {
+            if (board[y][x] !== 0 || gameOver) return false;
+            
+            board[y][x] = player;
+            drawBoard();
+            
+            if (checkWin(x, y, player)) {
+                showWinMessage(player);
+                return true;
+            }
+            
+            if (isBoardFull()) {
+                showDrawMessage();
+                return true;
+            }
+            
+            currentPlayer = player === BLACK ? WHITE : BLACK;
+            updateGameInfo();
+            
+            return true;
+        }
+        
+        // 处理玩家点击
+        function handleClick(event) {
+            if (currentPlayer !== BLACK || gameOver) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.floor((event.clientX - rect.left) / CELL_SIZE);
+            const y = Math.floor((event.clientY - rect.top) / CELL_SIZE);
+            
+            if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
+                if (makeMove(x, y, BLACK)) {
+                    // 玩家移动后，AI移动
+                    setTimeout(aiMove, 500);
+                }
+            }
+        }
+        
+        // 事件监听
+        canvas.addEventListener('click', handleClick);
+        resetBtn.addEventListener('click', initGame);
+        
+        // 开始游戏
+        initGame();
+    </script>
+</body>
+</html>
+```
+
+## 游戏功能说明
+
+1. **基本规则**：
+   - 15×15的标准五子棋棋盘
+   - 玩家执黑先行，电脑执白后行
+   - 先连成五子者获胜
+
+2. **AI功能**：
+   - 优先检查自己是否能直接获胜
+   - 其次检查玩家是否能获胜并阻止
+   - 如果没有直接威胁，会寻找最佳位置（靠近中心、靠近已有棋子）
+
+3. **界面功能**：
+   - 显示当前轮到谁下棋
+   - 游戏结束时显示获胜信息
+   - 重新开始按钮
+
+4. **使用方法**：
+   - 将代码保存为HTML文件（如`gomoku.html`）
+   - 用浏览器打开该文件即可开始游戏
+   - 点击棋盘交叉点放置棋子
+
+这个游戏实现了基本的五子棋功能，AI虽然简单但能提供一定的挑战性。您可以根据需要进一步修改和增强它。
