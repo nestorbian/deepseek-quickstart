@@ -43,58 +43,6 @@ sudo systemctl restart docker
 
 ## 安装 Open WebUI
 
-### 默认配置（Ollama 在同一台计算机上）
-
-如果 Ollama 服务运行在同一台计算机上，使用以下命令：
-
-```bash
-docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway \
-  -v open-webui:/app/backend/data \
-  --name open-webui \
-  --restart always \
-  ghcr.io/open-webui/open-webui:main
-```
-
-### Ollama 在另一台服务器上
-
-要连接到另一台服务器上的 Ollama，请将 `OLLAMA_BASE_URL` 环境变量设置为该服务器的 URL：
-
-```bash
-docker run -d -p 3000:8080 \
-  -e OLLAMA_BASE_URL=https://example.com \
-  -v open-webui:/app/backend/data \
-  --name open-webui \
-  --restart always \
-  ghcr.io/open-webui/open-webui:main
-```
-
-### [重点关注]使用 Nvidia GPU 支持运行 Open WebUI
-
-要使用 Nvidia GPU 支持运行 Open WebUI，请使用以下命令：
-
-```bash
-docker run -d -p 3000:8080 \
-  --gpus all \
-  --add-host=host.docker.internal:host-gateway \
-  -v open-webui:/app/backend/data \
-  --name open-webui \
-  --restart always \
-  ghcr.io/open-webui/open-webui:cuda
-```
-
-### 仅使用 API
-
-如果您仅使用 OpenAI API，可以使用以下命令（需要提供您的 OpenAI API 密钥）：
-
-```bash
-docker run -d -p 3000:8080 \
-  -e OPENAI_API_KEY=your_secret_key \
-  -v open-webui:/app/backend/data \
-  --name open-webui \
-  --restart always \
-  ghcr.io/open-webui/open-webui:main
-```
-
 ### [重点关注]安装捆绑 Ollama 的 Open WebUI（一体式安装）
 
 这种方法使用一个容器镜像，该镜像捆绑了 Open WebUI 和 Ollama，允许通过单个命令进行设置。根据您的硬件配置选择适当的命令：
@@ -121,6 +69,59 @@ docker run -d -p 3000:8080 \
   --restart always \
   ghcr.io/open-webui/open-webui:ollama
 ```
+
+### [重点关注]使用 Nvidia GPU 支持运行 Open WebUI
+
+要使用 Nvidia GPU 支持运行 Open WebUI，请使用以下命令：
+
+```bash
+docker run -d -p 3000:8080 \
+  --gpus all \
+  --add-host=host.docker.internal:host-gateway \
+  -v open-webui:/app/backend/data \
+  --name open-webui \
+  --restart always \
+  ghcr.io/open-webui/open-webui:cuda
+```
+
+### 默认配置（Ollama 在同一台计算机上）
+
+如果 Ollama 服务运行在同一台计算机上，使用以下命令：
+
+```bash
+docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway \
+  -v open-webui:/app/backend/data \
+  --name open-webui \
+  --restart always \
+  ghcr.io/open-webui/open-webui:main
+```
+
+### Ollama 在另一台服务器上
+
+要连接到另一台服务器上的 Ollama，请将 `OLLAMA_BASE_URL` 环境变量设置为该服务器的 URL：
+
+```bash
+docker run -d -p 3000:8080 \
+  -e OLLAMA_BASE_URL=https://example.com \
+  -v open-webui:/app/backend/data \
+  --name open-webui \
+  --restart always \
+  ghcr.io/open-webui/open-webui:main
+```
+
+### 仅使用 API
+
+如果您仅使用 OpenAI API，可以使用以下命令（需要提供您的 OpenAI API 密钥）：
+
+```bash
+docker run -d -p 3000:8080 \
+  -e OPENAI_API_KEY=your_secret_key \
+  -v open-webui:/app/backend/data \
+  --name open-webui \
+  --restart always \
+  ghcr.io/open-webui/open-webui:main
+```
+
 
 ## 访问 Open WebUI
 
@@ -166,18 +167,18 @@ docker volume rm ollama  # 如果使用了捆绑安装
 
 ## 参数说明
 
-| 参数 | 说明 |
-|------|------|
-| `-d` | 在后台运行容器（守护进程模式） |
-| `-p 3000:8080` | 将容器的 8080 端口映射到主机的 3000 端口 |
-| `--add-host=host.docker.internal:host-gateway` | 允许容器访问主机服务 |
-| `-v open-webui:/app/backend/data` | 创建名为 open-webui 的卷并挂载到容器 |
-| `-v ollama:/root/.ollama` | 创建名为 ollama 的卷用于存储模型 |
-| `--name open-webui` | 指定容器名称 |
-| `--restart always` | 设置容器总是自动重启 |
-| `--gpus all` | 允许容器使用所有 GPU |
-| `-e OLLAMA_BASE_URL=...` | 设置 Ollama 服务地址 |
-| `-e OPENAI_API_KEY=...` | 设置 OpenAI API 密钥 |
+| 参数 | 说明                                                                                                                    |
+|------|-----------------------------------------------------------------------------------------------------------------------|
+| `-d` | 在后台运行容器（守护进程模式）                                                                                                       |
+| `-p 3000:8080` | 将容器的 8080 端口映射到主机的 3000 端口                                                                                            |
+| `--add-host=host.docker.internal:host-gateway` | 允许容器访问主机服务                                                                                                            |
+| `-v open-webui:/app/backend/data` | 创建名为 open-webui 的卷并挂载到容器。<br/>使用命名卷挂载到容器路径，会在/var/lib/docker/volumes下创建、管理卷，和传统指定宿主机路径挂载方式不同，解耦了容器与宿主机文件系统，方便迁移、备份、管理 |
+| `-v ollama:/root/.ollama` | 创建名为 ollama 的卷用于存储模型                                                                                                  |
+| `--name open-webui` | 指定容器名称                                                                                                                |
+| `--restart always` | 设置容器总是自动重启。<br/>此策略指示Docker守护进程总是（always） 重新启动退出的容器。具体行为是：<br/>无论容器以何种退出代码（无论成功还是失败） 终止，Docker都会无条件地将其重新启动。<br/>如果容器是被手动停止（例如通过 docker stop 命令），则Docker不会在此策略下自动重启它，除非宿主机docker服务本身重启。                                                                                                           |
+| `--gpus all` | 允许容器使用所有 GPU                                                                                                          |
+| `-e OLLAMA_BASE_URL=...` | 设置 Ollama 服务地址                                                                                                        |
+| `-e OPENAI_API_KEY=...` | 设置 OpenAI API 密钥                                                                                                      |
 
 ## 故障排除
 

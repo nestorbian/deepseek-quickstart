@@ -20,7 +20,7 @@ curl -fsSL https://ollama.com/install.sh | sh
 
 ## 快速入门
 
-要运行并与 [DeepSeek-R1-7B](https://ollama.com/library/deepseek-r1) 进行对话：
+要运行并与 [DeepSeek-R1-0528-Qwen3-8B](https://ollama.com/library/deepseek-r1) 进行对话：
 
 ```bash
 ollama run deepseek-r1
@@ -122,9 +122,9 @@ Ollama 是一个轻量级、可扩展的框架，用于在本地计算机上构�
 
 ### REST API
 
-Ollama 提供 REST API 来运行和管理模型。
+Ollama 提供 REST API 来运行和管理模型。不兼容OpenAI
 
-#### 生成响应
+#### 生成响应（不支持工具调用）
 
 ```bash
 curl http://localhost:11434/api/generate -d '{
@@ -133,7 +133,7 @@ curl http://localhost:11434/api/generate -d '{
 }'
 ```
 
-#### 与模型对话
+#### 与模型对话（支持工具调用）
 
 ```bash
 curl http://localhost:11434/api/chat -d '{
