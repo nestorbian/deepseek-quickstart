@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek - 智能查询结果</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+        }
+
+        .result-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #3498db;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        .search-box {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .tag {
+            transition: all 0.2s ease;
+        }
+
+        .tag:hover {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .pagination-btn {
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover {
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- 导航栏 -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-brain text-2xl"></i>
+                    <span class="text-xl font-bold">DeepSeek</span>
+                </div>
+
+                <div class="hidden md:flex space-x-8">
+                    <a href="#" class="hover:text-blue-200 transition">首页</a>
+                    <a href="#" class="hover:text-blue-200 transition">产品</a>
+                    <a href="#" class="hover:text-blue-200 transition">解决方案</a>
+                    <a href="#" class="hover:text-blue-200 transition">文档</a>
+                    <a href="#" class="hover:text-blue-200 transition">关于我们</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <button class="px-4 py-2 bg-white text-blue-700 rounded-lg font-medium hover:bg-blue-50 transition">
+                        登录
+                    </button>
+                    <button class="px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition">
+                        注册
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- 搜索框 -->
+        <div class="max-w-3xl mx-auto mb-10">
+            <div class="search-box bg-white rounded-lg p-2 flex items-center">
+                <input type="text" placeholder="输入您的查询..."
+                    class="flex-grow px-4 py-3 focus:outline-none text-gray-700">
+                <button class="bg-blue-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-600 transition">
+                    <i class="fas fa-search mr-2"></i>搜索
+                </button>
+            </div>
+
+            <div class="flex flex-wrap mt-4 gap-2">
+                <span class="tag bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm cursor-pointer">人工智能</span>
+                <span class="tag bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm cursor-pointer">机器学习</span>
+                <span class="tag bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm cursor-pointer">深度学习</span>
+                <span class="tag bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm cursor-pointer">自然语言处理</span>
+                <span class="tag bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm cursor-pointer">计算机视觉</span>
+            </div>
+        </div>
+
+        <!-- 结果统计 -->
+        <div class="max-w-5xl mx-auto mb-6">
+            <p class="text-gray-600">找到约 <span class="font-semibold text-blue-600">127</span> 条结果 （用时 <span class="font-semibold text-blue-600">0.38</span> 秒）</p>
+        </div>
+
+        <!-- 结果列表 -->
+        <div class="max-w-5xl mx-auto space-y-6">
+            <!-- 结果项 1 -->
+            <div class="result-card bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-semibold text-blue-700 mb-2">DeepSeek AI 平台发布全新大语言模型</h3>
+                <p class="text-green-600 text-sm mb-3">https://www.deepseek.com/news/new-llm-release</p>
+                <p class="text-gray-700 mb-4">DeepSeek 最新发布的大语言模型在多项基准测试中表现优异，特别是在代码生成和自然语言理解任务上超越了同类产品。新模型支持128K上下文长度，并提供了更高效的推理速度。</p>
+                <div class="flex items-center text-sm text-gray-500">
+                    <span><i class="far fa-calendar-alt mr-1"></i> 2023-10-15</span>
+                    <span class="mx-3">•</span>
+                    <span><i class="far fa-clock mr-1"></i> 5分钟阅读</span>
+                </div>
+            </div>
+
+            <!-- 结果项 2 -->
+            <div class="result-card bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-semibold text-blue-700 mb-2">DeepSeek 开发者文档 - API 集成指南</h3>
+                <p class="text-green-600 text-sm mb-3">https://docs.deepseek.com/api-integration</p>
+                <p class="text-gray-700 mb-4">本文档详细介绍了如何将 DeepSeek AI 服务集成到您的应用程序中，包括身份验证、API调用示例、最佳实践和错误处理。提供了Python、JavaScript和Go的代码示例。</p>
+                <div class="flex items-center text-sm text-gray-500">
+                    <span><i class="far fa-calendar-alt mr-1"></i> 2023-09-28</span>
+                    <span class="mx-3">•</span>
+                    <span><i class="far fa-clock mr-1"></i> 12分钟阅读</span>
+                </div>
+            </div>
+
+            <!-- 结果项 3 -->
+            <div class="result-card bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-semibold text-blue-700 mb-2">DeepSeek 研究论文：多模态学习的突破</h3>
+                <p class="text-green-600 text-sm mb-3">https://research.deepseek.com/multimodal-breakthrough</p>
+                <p class="text-gray-700 mb-4">我们的研究团队在多模态学习领域取得了重大突破，提出了一种新的架构，能够更好地理解图像和文本之间的关系。该模型在视觉问答和图像描述生成任务上达到了最先进的性能。</p>
+                <div class="flex items-center text-sm text-gray-500">
+                    <span><i class="far fa-calendar-alt mr-1"></i> 2023-08-12</span>
+                    <span class="mx-3">•</span>
+                    <span><i class="far fa-clock mr-1"></i> 8分钟阅读</span>
+                </div>
+            </div>
+
+            <!-- 结果项 4 -->
+            <div class="result-card bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-semibold text-blue-700 mb-2">DeepSeek 企业解决方案 - 定制AI服务</h3>
+                <p class="text-green-600 text-sm mb-3">https://www.deepseek.com/enterprise/solutions</p>
+                <p class="text-gray-700 mb-4">为企业客户提供定制化的AI解决方案，包括私有化部署、领域特定模型微调、数据安全和合规性保障。我们已经为金融、医疗和法律行业提供了专业的AI服务。</p>
+                <div class="flex items-center text-sm text-gray-500">
+                    <span><i class="far fa-calendar-alt mr-1"></i> 2023-07-22</span>
+                    <span class="mx-3">•</span>
+                    <span><i class="far fa-clock mr-1"></i> 6分钟阅读</span>
+                </div>
+            </div>
+
+            <!-- 结果项 5 -->
+            <div class="result-card bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-semibold text-blue-700 mb-2">DeepSeek 开源项目在GitHub上获得10K星标</h3>
+                <p class="text-green-600 text-sm mb-3">https://github.com/deepseek-ai/core</p>
+                <p class="text-gray-700 mb-4">我们的开源核心库在GitHub上获得了超过10,000个星标，感谢开发者社区的支持和贡献。该项目提供了多种预训练模型和工具，帮助研究人员和开发者更容易地构建AI应用。</p>
+                <div class="flex items-center text-sm text-gray-500">
+                    <span><i class="far fa-calendar-alt mr-1"></i> 2023-06-30</span>
+                    <span class="mx-3">•</span>
+                    <span><i class="far fa-clock mr-1"></i> 4分钟阅读</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="max-w-5xl mx-auto mt-10 flex justify-center">
+            <div class="flex space-x-2">
+                <button class="pagination-btn w-10 h-10 flex items-center justify-center rounded-lg bg-white shadow text-gray-700">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="pagination-btn w-10 h-10 flex items-center justify-center rounded-lg bg-blue-500 text-white shadow">1</button>
+                <button class="pagination-btn w-10 h-10 flex items-center justify-center rounded-lg bg-white shadow text-gray-700">2</button>
+                <button class="pagination-btn w-10 h-10 flex items-center justify-center rounded-lg bg-white shadow text-gray-700">3</button>
+                <button class="pagination-btn w-10 h-10 flex items-center justify-center rounded-lg bg-white shadow text-gray-700">4</button>
+                <button class="pagination-btn w-10 h-10 flex items-center justify-center rounded-lg bg-white shadow text-gray-700">5</button>
+                <button class="pagination-btn w-10 h-10 flex items-center justify-center rounded-lg bg-white shadow text-gray-700">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 相关搜索 -->
+        <div class="max-w-5xl mx-auto mt-12">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">相关搜索</h3>
+            <div class="flex flex-wrap gap-3">
+                <a href="#" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-blue-100 transition">deepseek api文档</a>
+                <a href="#" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-blue-100 transition">deepseek模型下载</a>
+                <a href="#" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-blue-100 transition">deepseek价格</a>
+                <a href="#" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-blue-100 transition">deepseek与chatgpt比较</a>
+                <a href="#" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-blue-100 transition">deepseek企业版</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="gradient-bg text-white mt-16 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">DeepSeek</h4>
+                    <p class="text-blue-100">领先的人工智能研究和技术公司，致力于推动AI技术的发展和应用。</p>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">产品</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-blue-100 hover:text-white transition">DeepSeek LLM</a></li>
+                        <li><a href="#" class="text-blue-100 hover:text-white transition">DeepSeek Code</a></li>
+                        <li><a href="#" class="text-blue-100 hover:text-white transition">DeepSeek Vision</a></li>
+                        <li><a href="#" class="text-blue-100 hover:text-white transition">企业解决方案</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">资源</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-blue-100 hover:text-white transition">文档</a></li>
+                        <li><a href="#" class="text-blue-100 hover:text-white transition">API参考</a></li>
+                        <li><a href="#" class="text-blue-100 hover:text-white transition">博客</a></li>
+                        <li><a href="#" class="text-blue-100 hover:text-white transition">社区</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">联系我们</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2 text-blue-200"></i>
+                            <span class="text-blue-100">contact@deepseek.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2 text-blue-200"></i>
+                            <span class="text-blue-100">北京市海淀区</span>
+                        </li>
+                    </ul>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center hover:bg-blue-600 transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center hover:bg-blue-600 transition">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center hover:bg-blue-600 transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-blue-400 mt-10 pt-6 text-sm text-blue-200 text-center">
+                <p>© 2023 DeepSeek AI. 保留所有权利。</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

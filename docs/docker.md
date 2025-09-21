@@ -96,14 +96,17 @@ curl localhost:8080  # 应返回 Nginx 欢迎页面
 
 ## 4. 常用命令
 
-| 命令 | 说明 |
-|------|------|
+| 命令                     | 说明         |
+|------------------------|------------|
 | `docker-compose up -d` | 启动服务（后台模式） |
-| `docker-compose down` | 停止并移除容器 |
-| `docker-compose ps` | 查看运行中的服务 |
-| `docker-compose logs` | 查看服务日志 |
+| `docker-compose down`  | 停止并移除容器    |
+| `docker-compose ps`    | 查看运行中的容器服务 |
+| `docker-compose logs`  | 查看服务日志     |
+| `docker-compose start` | 启动原先的服务    |
+| `docker-compose stop`  | 停止服务       |
 
 > **注意**：  
 > - 如果遇到权限问题，请确认用户已加入 docker 组  
 > - 国内用户可考虑使用镜像源加速下载（如阿里云镜像）  
 > - Docker Compose v2+ 需要 Docker 20.10+ 版本支持
+> - 使用docker-compose命令需要切换到docker-compose.yaml所在目录
