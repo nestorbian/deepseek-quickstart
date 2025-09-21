@@ -179,3 +179,4 @@ cython_debug/
 *.zip
 mcp/dev*
 a2a/*
+.DS_Store
