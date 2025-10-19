@@ -1,0 +1,15 @@
+{
+	"servers": {
+		"weather-mcp-server": {
+			"type": "stdio",
+			"command": "uv",
+			"args": [
+				"--directory",
+				"D:\\VSCode_projects\\weather",
+				"run",
+				"weather.py"
+			]
+		}
+	},
+	"inputs": []
+}
